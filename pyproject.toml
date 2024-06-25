@@ -1,3 +1,7 @@
+[tool.pytest.ini_options]
+pythonpath = [".", "src",]
+asyncio_mode = "auto"
+
 [tool.poetry]
 name = "first-proj"
 version = "0.1.0"
@@ -11,6 +15,7 @@ fastapi = {extras = ["all"], version = "^0.111.0"}
 alembic = "^1.13.1"
 asyncpg = "^0.29.0"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.31"}
+gunicorn = "^22.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
