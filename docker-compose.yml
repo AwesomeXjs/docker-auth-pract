@@ -1,25 +1,38 @@
 version: '3.8'
 
 services:
+  db: 
+    container_name: my_db
+    image: postgres
+    environment:
+      - POSTGRES_DB=database
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    ports:
+      - ${DB_PORT}:5432
+    restart: always
+    volumes:
+      - .postgres:/var/lib/postgres/data
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   app:
     container_name: my_app
-    build:
+    build: 
       context: .
-
     depends_on:
-      - db
-
+      db:
+        condition: service_healthy
+    command: ['/app/docker/app.sh']
+    # volumes:
+    #   - ./src:/app/src
     ports:
       - 9999:8000
-
-
+    restart: always
     env_file:
-      - .env-non-dev
-
-
-  db:
-    image: postgres:15
-    ports:
-      - 5432:5432
-    env_file:
-      - .env-non-dev
+      - .env

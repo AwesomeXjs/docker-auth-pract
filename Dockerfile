@@ -1,15 +1,18 @@
-FROM python:3.12
+FROM python:latest
 
 WORKDIR /app
 
-COPY requirements.txt .
+ENV PYTHONDONTWRITEBYCODE 1
+ENV PYTHONUNBUFFED 1
 
-RUN pip install -r requirements.txt
+RUN pip install poetry
+
+RUN poetry config virtualenvs.create false
+
+COPY pyproject.toml pyproject.toml
+COPY poetry.lock poetry.lock
+
+RUN poetry install
 
 COPY . .
 
-RUN alembic upgrade head
-
-WORKDIR /src
-
-CMD gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000
