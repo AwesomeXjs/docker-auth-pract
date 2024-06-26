@@ -1,4 +1,3 @@
-import asyncio
 from typing import AsyncGenerator
 from httpx import ASGITransport, AsyncClient
 
@@ -34,8 +33,8 @@ async def create_tables():
     async with engine_test.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
-    # async with engine_test.begin() as conn:
-    #     await conn.run_sync(Base.metadata.drop_all)
+    async with engine_test.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 
 @pytest.fixture(scope="session")
@@ -44,3 +43,9 @@ async def ac() -> AsyncGenerator[AsyncClient, None]:
         transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:
         yield ac
+
+
+@pytest.fixture
+async def new_task():
+    new_task = {"title": "string2", "description": "string"}
+    return new_task
