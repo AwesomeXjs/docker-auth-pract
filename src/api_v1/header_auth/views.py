@@ -12,13 +12,18 @@ static_auth_token_to_username = {
 }
 
 
+# DEPENDENCY для проверки по токену в хедере
 def get_username_by_static_auth_token(
+    # токен который мы хотим получить из заголовка
     static_token: str = Header(alias="x-auth-token"),
 ) -> str:
+
+    # проверяем есть ли токен в нашей бд (списке в данном случае)
     if token := static_auth_token_to_username.get(static_token):
         return token
     raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Token invalid"
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=f"Token invalid",
     )
 
 
@@ -26,4 +31,4 @@ def get_username_by_static_auth_token(
 def demo_auth_some_http_header(
     username: str = Depends(get_username_by_static_auth_token),
 ):
-    pass
+    return {"username": username}
