@@ -46,17 +46,18 @@ def decode_jwt(
 
 
 # хешируем пароль
-def hash_password(password: str) -> bytes:
+def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
     pwd_bytes: bytes = password.encode()
-    return bcrypt.hashpw(pwd_bytes, salt)
+    return bcrypt.hashpw(pwd_bytes, salt).decode()
 
 
+# хешируемвведенный пароль и сверяеми с хешем в базе данных
 def validate_pass(
     password: str,
-    hashed_password: bytes,
+    hashed_password: str,
 ) -> bool:
     return bcrypt.checkpw(
         password.encode(),
-        hashed_password=hashed_password,
+        hashed_password=hashed_password.encode(),
     )
