@@ -16,3 +16,9 @@ class UserRegisterSchema(BaseModel):
 
 class UserUpdateSchema(BaseModel):
     username: str = Field(max_length=15)
+
+
+class TokenInfo(BaseModel):
+    access_token: str
+    refresh_token: str | None = None
+    token_type: str = "COOKIE"

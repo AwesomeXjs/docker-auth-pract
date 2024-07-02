@@ -7,13 +7,13 @@ from .schemas import UserRegisterSchema
 
 
 async def create_user(
-    session: AsyncSession, user: UserRegisterSchema
+    session: AsyncSession, username: str, password: str
 ) -> UserRegisterSchema:
-    hashed_password = utils_jwt.hash_password(password=user.password)
-    stmt = insert(User).values(username=user.username, hashed_password=hashed_password)
+    hashed_password = utils_jwt.hash_password(password=password)
+    stmt = insert(User).values(username=username, hashed_password=hashed_password)
     await session.execute(stmt)
     await session.commit()
-    return User(username=user.username, hashed_password=hashed_password)
+    return User(username=username, hashed_password=hashed_password)
 
 
 async def update_username(
